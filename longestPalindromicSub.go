@@ -20,7 +20,6 @@ func longestPalindrome(s string) string {
 	}
 
 	for window := len(s) - 1; window > 0; window-- {
-		// Check each substring of the current window size
 		for i := 0; i+window <= len(s); i++ {
 			wordWindow := s[i : i+window]
 			if isPalindrome(wordWindow) {
