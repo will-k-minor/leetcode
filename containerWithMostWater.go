@@ -1,6 +1,6 @@
 package main
 
-func maxArea(height []int) int {
+func ContainerWithMostWater(height []int) int {
 	if len(height) <= 1 {
 		return 0
 	}
