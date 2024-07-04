@@ -1,6 +1,7 @@
 package main
 
 func threeSum(nums []int) [][]int {
+	return [][]int{}
 	/**
 		        always look ahead, never loop back
 		        given the combination of two, see if we can find the remainder where

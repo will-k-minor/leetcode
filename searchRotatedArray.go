@@ -10,59 +10,70 @@ func search(nums []int, target int) int {
 	  determinePivot is where the currentNum > nextNum
 
 	*/
+	// the "pivot" is the true beginning ofthe array
 
-	result := -1
-
-	var hasPivot = func(first, last int) bool {
-		return first > last
-	}
-
-	var binarySearch func(left, right int)
-	binarySearch = func(left, right int) {
-		newPivot := (right - left) / 2
-		if nums[newPivot] == target {
-			result = newPivot
-			return
-		}
-		if nums[left] == target {
-			result = left
-			return
-		}
-		if nums[right] == target {
-			result = right
-			return
-		}
-
-		if nums[newPivot] > target {
-			// lhs search
-			binarySearch(left, newPivot)
-		} else {
-			// rhs search
-			binarySearch(newPivot, right)
-		}
-	}
-
-	pivot := hasPivot(nums[0], nums[len(nums)-1])
-	pivotIndex := len(nums) / 2
-
-	if pivot {
-		for i := 0; i < len(nums); i++ {
-			if nums[i] > nums[i+1] {
-				pivotIndex = i
-				break
+	if len(nums) <= 2 {
+		for idx, val := range nums {
+			if val == target {
+				return idx
 			}
 		}
+
+		return -1
 	}
 
-	//determine first loop of whether to select rhs or lhs
-	// pick the side where the firstNum < target < lastNum
+	findPivot := func() int {
+		left, right := 0, len(nums)-1
 
-	if nums[0] < target && target < nums[pivotIndex] {
-		binarySearch(0, pivotIndex)
-	} else if nums[pivotIndex] <= target && target <= nums[len(nums)-1] {
-		binarySearch(pivotIndex, len(nums)-1)
+		if nums[left] < nums[right] {
+			return 0 // there is no pivot
+		}
+
+		// binary search
+		for left <= right {
+			mid := left + (right-left)/2
+
+			if mid < len(nums)-1 && nums[mid] > nums[mid+1] {
+				return mid + 1 // we found the beginning
+			}
+
+			if nums[left] <= nums[mid] {
+				left = mid + 1 // shifts our window to the right
+			} else {
+				right = mid - 1 // shifts our window to the left
+			}
+		}
+		return 0
 	}
 
-	return result
+	binarySearch := func(left, right int) int {
+		for left <= right {
+			mid := left + (right-left)/2
 
+			if nums[mid] == target {
+				return mid
+			}
+
+			if nums[mid] < target {
+				left = mid + 1 // search rhs
+			} else {
+				right = mid - 1 // search lhs
+			}
+		}
+		return -1
+	}
+
+	pivotIndex := findPivot()
+
+	if pivotIndex == 0 {
+		return binarySearch(0, len(nums)-1)
+	}
+
+	if target >= nums[0] && target <= nums[pivotIndex-1] {
+		// pick lhs
+		return binarySearch(0, pivotIndex-1)
+	} else {
+		// pick rhs
+		return binarySearch(pivotIndex, len(nums)-1)
+	}
 }
