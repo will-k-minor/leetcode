@@ -26,7 +26,9 @@ func combine(n int, k int) [][]int {
 	var dfsCombo func(cur []int)
 	dfsCombo = func(cur []int) {
 		if len(cur) == k {
-			result = append(result, cur)
+			temp := make([]int, len(cur))
+			copy(temp, cur)
+			result = append(result, temp)
 		} else {
 			idx := -1
 			if len(cur)-1 >= 0 {
